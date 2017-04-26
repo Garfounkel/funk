@@ -21,3 +21,11 @@ cabal.project.local
 ### Mine ###
 *.pdf
 *.out
+
+haskell/ADT
+haskell/CompoFibo
+haskell/Fibo
+haskell/InnerSum
+haskell/comprehension_list
+haskell/park
+haskell/tail_facto
