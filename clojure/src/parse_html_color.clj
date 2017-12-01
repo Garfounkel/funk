@@ -1,6 +1,7 @@
-(ns parse-html-color)
+(ns parse-html-color
+  (:use [preset-colors])
+  (:use [clojure.pprint]))
 
-(def preset-colors)
 
 (defn parse-6-digit [s]
   {:r (Integer/parseInt (subs s 1 3) 16)
@@ -17,8 +18,7 @@
                               (parse-6-digit color))
     :else (parse-6-digit (get preset-colors (clojure.string/lower-case color)))))
 
+(pprint (parse-html-color "#80FFA0"))   ; => {:r 128 :g 255 :b 160}
+(pprint (parse-html-color "#3B7"))      ; => {:r 51  :g 187 :b 119}
+(pprint (parse-html-color "LimeGreen")) ; => {:r 50  :g 205 :b 50 }
 
-;(defmulti parse-html-color (fn [[h & t]] [h (count t)]))
-;(defmethod parse-html-color [\# 6] [[_ & hex]] (to-rgb hex))
-;(defmethod parse-html-color [\# 3] [[_ & hex]] (to-rgb (interleave hex hex)))
-;(defmethod parse-html-color :default [color] (parse-html-color (preset-colors (clojure.string/lower-case color))))
