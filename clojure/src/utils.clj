@@ -10,4 +10,4 @@
         (last $)))
 
 (defn arg-prn [f & args]
-  (prn (str (fn-name f) args ": " (apply f args))))
+  (printf "%s%s: %s\n" (fn-name f) args (print-str (apply f args))))
