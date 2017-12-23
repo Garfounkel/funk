@@ -3,6 +3,7 @@
 
 (defn- square [x] (* x x))
 
+
 (defn decompose [n]
   (let [target (square n)]
     (loop [acc [(dec n)] diff (- target (square (dec n)))]

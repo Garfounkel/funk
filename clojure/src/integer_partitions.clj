@@ -1,15 +1,17 @@
 (ns integer-partitions
   (require [clojure.test :refer :all]
-           [utils :refer :all]))
+           [utils :refer :all]
+           [clojure.math.combinatorics :as combo]))
 
-(declare enum)
+;; My version of enum, plus a little memorization
+;; twist which drastically improves performances:
+(declare enum-memo)
 
 (defn seq-enum [n i]
   (cond
     (= n i) (list (list i))
     (= 1 i) (list (doall (repeat n 1)))
-    :else (for [sub-array (enum (- n i)) :when (or (= 1 (first sub-array)) (< 1 (count sub-array)))]
-            (conj sub-array i))))
+    :else (filter #(>= (first %) (second %)) (for [sub-array (enum-memo (- n i))] (conj sub-array i)))))
 
 (defn enum [n]
   (loop [i n acc []]
@@ -17,6 +19,12 @@
       acc
       (recur (dec i) (concat acc (seq-enum n i))))))
 
+(def enum-memo (memoize enum))
+
+;; Other version, using combinatorics:
+; (defn enum [n]
+;   (for [sub-array (combo/partitions (repeat n 1))]
+;     (map #(reduce + %) sub-array)))
 
 (defn prod [n]
   (sort (distinct (map #(reduce * %) (enum n)))))
@@ -25,13 +33,10 @@
   (let [lst (prod n)
         cnt (count lst)
         diff (- (apply max lst) (apply min lst))
-        average (float (/ (apply + lst) cnt))
-        median (float (let [mid (/ cnt 2)]
-                        (if (odd? cnt) (nth lst mid) (/ (+ (nth lst mid) (nth lst (dec mid))) 2.0))))]
-    (format "Range: %s Average: %.2f Median: %.2f" diff average median)))
-
-
-(time (part 21))
+        average (/ (apply + lst) cnt)
+        median  (let [mid (/ cnt 2)]
+                    (if (odd? cnt) (nth lst mid) (/ (+ (nth lst mid) (nth lst (dec mid))) 2.0)))]
+    (format "Range: %s Average: %.2f Median: %.2f" diff (double average) (double median))))
 
 
 (testing "Enum:"
