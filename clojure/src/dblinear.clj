@@ -4,31 +4,19 @@
 
 ; y = 2 * x + 1 and z = 3 * x + 1
 ; u = [1, 3, 4, 7, 9, 10, 13, 15, 19, 21, 22, 27, ...]
-(defn conj-distinct [coll y z]
-  (letfn [(cd-1 [c a] (if (some #{a} c)
-                        c
-                        (conj c a)))]
-    (cd-1 (cd-1 coll y) z)))
-
 (defn dblinear-seq [n]
-  (loop [sorted-u [1]
+  (loop [sorted-u (sorted-set 1)
          i 0]
-    (if (or (= (* n 3/5) i) (= i n))
-      ;(sort sorted-u)
+    (if (= i n)
       sorted-u
-      (let [x (nth sorted-u i)
+      (let [x (first sorted-u)
+            xs (set/difference sorted-u #{x})
             y (inc (* 2 x))
             z (inc (* 3 x))]
-        (recur (vec (sort (conj-distinct sorted-u y z))) (inc i))))))
-
+        (recur (into xs #{y z}) (inc i))))))
 
 (defn dblinear [n]
-  (if (= n 20)
-    57
-    (nth (dblinear-seq n) n)))
-
-;(defn dblinear [n]
-;  (first (dblinear-seq n)))
+  (first (dblinear-seq n)))
 
 
 (utils/arg-prn dblinear-seq 1)
@@ -43,5 +31,6 @@
 (utils/arg-prn dblinear 10)
 (utils/arg-prn dblinear 20)
 (utils/arg-prn dblinear 50)
-(time (utils/arg-prn dblinear 2000))
-(time (utils/arg-prn dblinear 6000))
+(utils/with-timeout 2000 dblinear 2000)
+(utils/with-timeout 3000 dblinear 6000)
+(utils/with-timeout 3000 dblinear 60000)
