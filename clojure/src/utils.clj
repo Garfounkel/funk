@@ -40,22 +40,6 @@
        (print-call-info red "" (format "timed out after %s msecs" ms) f args)
        (print-call-info blue reset (format "%s%s (Elapsed time: %s msecs)" res yellow elapsed) f args))))
 
-
-;(defn with-timeout [ms f & args]
-;  (let [p (promise)
-;        h (future
-;            (deliver p (apply f args)))
-;        t (future
-;            (Thread/sleep ms)
-;            (future-cancel h)
-;            (deliver p nil))
-;        start# (. System (nanoTime))
-;        res @p
-;        elapsed (/ (double (- (. System (nanoTime)) start#)) 1000000.0)]
-;    (if (nil? res)
-;      (print-call-info red "" (format "timed out after %s msecs" ms) f args)
-;      (print-call-info blue reset (format "%s%s (Elapsed time: %s msecs)" res yellow elapsed) f args))))
-
 (defn naming []
   (println
     "Functions:
