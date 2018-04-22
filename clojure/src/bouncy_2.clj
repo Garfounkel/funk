@@ -2,7 +2,6 @@
   (require [utils]))
 
 ;; Count non-bouncy number up to a power of 10
-
 ; Maths says that the answer is: Binomial(n + 10, 10) + Binomial(n + 9, 9) - 2 - 10n
 
 
