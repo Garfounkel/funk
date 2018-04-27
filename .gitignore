@@ -45,6 +45,7 @@ project/plugins/project/
 .history
 .cache
 .lib/
+package-lock.json
 
 ### Scala ###
 *.class
