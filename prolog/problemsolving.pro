@@ -1,3 +1,35 @@
+parent(marge, lisa).
+parent(marge, bart).
+parent(marge, maggie).
+parent(homer, lisa).
+parent(homer, bart).
+parent(homer, maggie).
+parent(abraham, homer).
+parent(abraham, herb).
+parent(mona, homer).
+parent(jackie, marge).
+parent(clancy, marge).
+parent(jackie, patty).
+parent(clancy, patty).
+parent(jackie, selma).
+parent(clancy, selma).
+parent(selma, ling).
+
+female(mona).
+female(jackie).
+female(marge).
+female(ann).
+female(patty).
+female(selma).
+female(ling).
+female(lisa).
+female(maggie).
+male(abraham).
+male(herb).
+male(homer).
+male(bart).
+male(clancy).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %% Monkey problem
 action(state(middle, onbox, middle, not_holding), grab, state(middle, onbox, middle, holding)).
@@ -45,3 +77,12 @@ myprint.
 empty(X) :-
   retract(X), fail.
 empty(_).
+
+findany(Var, Pred, _) :-
+  Pred, assert(found(Var)), fail.
+findany(_, _, Results) :-
+  assert(found(last)), collect_found(Results).
+
+collect_found(L) :-
+  retract(found(X)), !,
+  (X == last, !, L = []; L = [X | Rest], collect_found( Rest)).
