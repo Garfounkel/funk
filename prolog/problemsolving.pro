@@ -86,3 +86,63 @@ findany(_, _, Results) :-
 collect_found(L) :-
   retract(found(X)), !,
   (X == last, !, L = []; L = [X | Rest], collect_found( Rest)).
+
+%--------------------------------
+%       semantic networks
+%--------------------------------
+isa(bird, animal).
+isa(albert, albatross).
+isa(albatross, bird).
+isa(kiwi, bird).
+isa(willy, kiwi).
+isa(crow, bird).
+isa(ostrich, bird).
+
+:- dynamic(locomotion/2).	% for tests
+
+locomotion(bird, fly).
+locomotion(kiwi, walk).
+locomotion(X, Loc) :-
+	isa(X, SuperX),
+	locomotion(SuperX, Loc).
+
+food(albatross,fish).
+food(bird,grain).
+
+/* drawback : n particular inheritance rules */
+/* solution: one general predicate : "known" */
+
+known(Fact) :-
+	Fact,
+	!.
+known(Fact) :-
+	Fact =.. [Rel, Arg1, Arg2],
+	isa(Arg1, SuperArg1),
+	SuperFact =.. [Rel, SuperArg1, Arg2],
+	known(SuperFact).
+
+habitat(Animal, continent) :-
+  known(locomotion(Animal, L)),
+  L \== fly,
+  !.
+habitat(_, unknown).
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% Hanoi
+hanoi :-
+  % 1 is the smallest disk and 5 the largest
+  move([5,4,3,2,1], a, c, b).
+
+move(_, [ ], _, _, _).
+move(D, [D1|Stack], Start, Goal, Interm) :-
+  Dn is D + 1,
+  move(Dn, Stack, Start, Interm, Goal),  % this is a (central) recursive call
+  drawDepth(D),
+  write('move disk '), write(D1), write(' from '), write(Start), write(' to '), write(Goal), nl,
+  move(Dn, Stack, Interm, Goal, Start).  % yet another recursive call
+
+drawDepth(0) :- !.
+drawDepth(Depth) :-
+  write(';- '),
+  Depth1 is Depth -1,
+  drawDepth(Depth1).
