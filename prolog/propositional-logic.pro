@@ -8,4 +8,14 @@ is_true(V, -X) :- not(is_true(V, X)). % link with Prolog’s negation
 is_true(V, X equiv Y) :- is_true(V, X and Y); is_true(V, -(X and Y)).
 is_true(V, X imp Y) :- is_true(V, -X or Y).
 
-is_true(v0, a).
+is_true(V, X) :-
+    member(X,V).
+
+evaluation(V) :-
+    sub_set(V, [a,b,c]).
+
+sub_set([], []).
+sub_set([X|XL], [X|YL]) :-
+    sub_set(XL, YL).
+sub_set(XL, [_|YL]) :-
+    sub_set(XL, YL).
